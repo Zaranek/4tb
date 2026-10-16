@@ -1,64 +1,33 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-class Postac
+﻿Licznik gracz = new Licznik();
+Console.WriteLine($"NA poczatku : {gracz.PobierzPunkty()}");
+gracz.DodajPunkty(50);
+Console.WriteLine($"Po dodaniu 50 : {gracz.PobierzPunkty()}");
+gracz.DodajPunkty(-200);
+Console.WriteLine($"Po próbie dodania -200 : {gracz.PobierzPunkty()}");
+//fragment poniżej który bedzie powodował błąd ze względu na hermetyzację
+//gracz.PokazPunkty = -200;
+//private blokuje bezpośrednie przypisanie gracz.punkty = -200 poza klasą
+// PobierzPunkty() pozwala odczytać aktualny stan pola. niczego nie zmienia.
+class Licznik
 {
-    public string nazwa = "";
-    public int zdrowie;
-    public int atak;
-
-    public Postac(string nowaNazwa, int noweZdrowie, int nowyAtak)
+    private int punkty = 0;
+    public void DodajPunkty(int ile)
     {
-        nazwa= nowaNazwa;
-        zdrowie= noweZdrowie;
-        atak=nowyAtak;
-    }
-    public  void PokazStatystyki()
-    {
-        Console.WriteLine($"{nazwa} zdrowie {zdrowie}, punkty ataku {atak}");
-    }
-
-    public void OtrzymajObrazenia(int ile)
-    {
-        zdrowie -= ile;
-        if (zdrowie < 0)
+        if(ile>0)
         {
-            zdrowie = 0;
+            punkty += ile;
         }
     }
-    public void Uleczenie (int ile)
+    public void PokazPunkty()
     {
-        zdrowie += ile;
+        Console.WriteLine(punkty);
     }
-    public void Atakuj(Postac przeciwnik)
+    public void Wyzeruj()
     {
-        Console.WriteLine($"{nazwa} atakuje {przeciwnik.nazwa} i zadaje {atak} obrażeń ");
-        przeciwnik.OtrzymajObrazenia(atak);
+        punkty= 0;
     }
-}
-class Program
-{
-    static void Main()
+    public int PobierzPunkty()
     {
-        Postac rycerz=new Postac("Rycerz",100,20);
-        Postac mag = new Postac("Mag",70,35);
-        Postac lucznik = new Postac("Łucznik", 80, 25);
-
-        Console.Write("Podaj nazwe postaci");
-        string wybranaNazwa=Console.ReadLine() ?? "";
-        Console.Write("Podaj zdrowie");
-        int wybraneZdrowie = int.Parse(Console.ReadLine() ?? "0");
-        Console.Write("Podaj atak");
-        int wybranyAtak = int.Parse(Console.ReadLine() ?? "0");
-
-        Postac gracz = new Postac(wybranaNazwa, wybraneZdrowie, wybranyAtak);
-        gracz.PokazStatystyki();
-
-        rycerz.PokazStatystyki();
-        mag.PokazStatystyki();
-        rycerz.Atakuj(mag);
-        mag.Atakuj(rycerz);
-        mag.PokazStatystyki();
-        rycerz.PokazStatystyki();
-       
+        return punkty;
     }
 }
